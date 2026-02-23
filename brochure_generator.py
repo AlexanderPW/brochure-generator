@@ -1,7 +1,18 @@
 import os
 import json
 from dotenv import load_dotenv
-from IPython.display import Markdown, display, update_display
+try:
+    from IPython.display import Markdown, display, update_display
+except ImportError:
+    class Markdown:
+        def __init__(self, text):
+            self.text = text
+        def __str__(self):
+            return self.text
+    def display(obj, display_id=None):
+        print(obj)
+    def update_display(obj, display_id=None):
+        print(obj)
 from scraper import fetch_website_links, fetch_website_contents
 from openai import OpenAI
 
@@ -113,7 +124,7 @@ def create_brochure(company_name, url):
     display(Markdown(result))
 
 
-# create_brochure("Potential On Point", "https://kelseywaldrop.com")
+create_brochure("Potential On Point", "https://kelseywaldrop.com")
 
 def stream_brochure(company_name, url):
     stream = openai.chat.completions.create(
@@ -131,4 +142,4 @@ def stream_brochure(company_name, url):
         update_display(Markdown(response), display_id=display_handle.display_id)
 
 
-    stream_brochure("Potential On Point", "https://kelseywaldrop.com")
+# stream_brochure("Potential On Point", "https://kelseywaldrop.com")
